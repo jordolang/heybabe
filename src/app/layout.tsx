@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost, Sacramento } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
-import { siteUrl } from "@/lib/site-url";
+import { isLiveDomain, siteUrl } from "@/lib/site-url";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollProgress from "@/components/ScrollProgress";
 import Nav from "@/components/Nav";
@@ -67,7 +67,8 @@ export const metadata: Metadata = {
     description: site.description,
   },
   alternates: { canonical: "/" },
-  robots: { index: true, follow: true },
+  // Mirrors robots.txt: demo builds stay out of the index.
+  robots: { index: isLiveDomain(), follow: isLiveDomain() },
 };
 
 export const viewport: Viewport = {

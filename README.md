@@ -164,11 +164,26 @@ The form also carries a honeypot field for spam.
 
 ## Deploying
 
-Deploys to Vercel as-is: import the repo, add the environment variables above,
-and set `site.url` in `src/data/site.ts` to the live domain so the sitemap,
-canonical URLs and social cards are correct.
+Live on Vercel: project **heybabe**, team *Jordan Lang's projects*, linked to
+this GitHub repo. Every push deploys automatically — the production branch
+(`main`) publishes to the production URL, and every other branch gets its own
+preview URL.
 
----
+Environment variables to set in the Vercel dashboard:
+
+| Variable | Needed for | Effect if unset |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Launch | Canonicals fall back to the deployment URL, **and the site stays `noindex`** |
+| `RESEND_API_KEY` / `BOOKING_FROM` | Booking emails | Form hands the visitor a pre-filled mail draft instead |
+| `INSTAGRAM_ACCESS_TOKEN` | Live Instagram feed | Falls back to the curated local gallery |
+
+### Search indexing is deliberately off until launch
+
+Preview and `*.vercel.app` builds still carry placeholder pricing, so
+`robots.txt` disallows everything and pages are `noindex` until
+`NEXT_PUBLIC_SITE_URL` is set. A demo with invented prices ranking under hey
+babe's name would do real damage. Setting that variable on the real domain
+turns indexing on — there is nothing else to remember.
 
 ## SEO
 

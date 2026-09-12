@@ -24,3 +24,16 @@ export function siteUrl(): string {
 
   return site.url;
 }
+
+/**
+ * Whether this deployment is serving the real, launched domain.
+ *
+ * Preview and *.vercel.app builds still carry placeholder pricing, so they
+ * must not be indexed under hey babe's name — a demo outranking or
+ * contradicting the real site would do actual harm. Setting
+ * NEXT_PUBLIC_SITE_URL is the switch that says "this is the live site", and
+ * indexing turns itself on at that moment.
+ */
+export function isLiveDomain(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_SITE_URL);
+}
