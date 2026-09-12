@@ -24,7 +24,7 @@
 
   --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
-  --font-script: var(--font-kaushan), cursive;
+  --font-script: var(--font-script-family), cursive;
 
   --ease-babe: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);

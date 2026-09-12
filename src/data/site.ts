@@ -1,44 +1,57 @@
 /**
  * Single source of truth for every piece of copy and product data on the site.
  *
- * NOTE FOR HEY BABE: everything below marked `PLACEHOLDER` is written to be
- * realistic for the permanent-jewelry market but is not your real data yet.
- * Send us real chain names, prices, event minimums and reviews and we swap
- * them here — nothing else in the codebase needs to change.
+ * Business facts below (name, product line, service formats, states served,
+ * materials, contact details) are taken from hey babe's own business card and
+ * Instagram profile @xo.heybabe and are accurate.
+ *
+ * Anything still marked `PLACEHOLDER` is invented but market-realistic, and is
+ * waiting on real numbers — chain names and prices, charm pricing, event
+ * minimums, and reviews. Send those over and we swap them here; nothing else
+ * in the codebase needs to change.
  */
 
 export const site = {
   name: "hey babe",
+  /** Secondary brand line used on the Instagram profile. */
+  collective: "The Babe Collective",
   tagline: "Handcrafted & Permanent Fine Jewelry",
   blurb: "Custom 14K Gold-Filled & Sterling Silver",
   url: "https://xoheybabe.com", // PLACEHOLDER — update to the live domain
   email: "xo.heybabe@gmail.com",
   instagram: "xo.heybabe",
   instagramUrl: "https://instagram.com/xo.heybabe",
-  // PLACEHOLDER — service area; update with the real city/region.
-  serviceArea: "Cincinnati & the Tri-State",
+
+  /** Four states served, per the Instagram profile: CT. RI. MA. NY. */
+  states: ["Connecticut", "Rhode Island", "Massachusetts", "New York"],
+  statesShort: ["CT", "RI", "MA", "NY"],
+  /** Short prose form for use mid-sentence. */
+  serviceArea: "Connecticut, Rhode Island, Massachusetts & New York",
+  serviceAreaShort: "CT · RI · MA · NY",
+
   description:
-    "hey babe is a custom permanent jewelry studio. We come to you — weddings, pop-ups, corporate events and private parties — and hand-weld 14K gold-filled and sterling silver chains sized to fit, clasp-free, made to last.",
+    "hey babe is a custom permanent jewelry studio serving Connecticut, Rhode Island, Massachusetts and New York. Custom bracelets, anklets, necklaces and handchains in 14K gold-filled and sterling silver — hand-welded to fit, clasp-free. Private parties, appointments and pop-ups.",
 };
 
 export const nav = [
   { label: "The Ritual", href: "#ritual" },
+  { label: "Pieces", href: "#pieces" },
   { label: "Chains", href: "#chains" },
   { label: "Charms", href: "#charms" },
-  { label: "Events", href: "#events" },
-  { label: "Stories", href: "#stories" },
+  { label: "Book Us", href: "#events" },
   { label: "FAQ", href: "#faq" },
 ] as const;
 
+/** Straight from the profile and the card. */
 export const marqueeWords = [
-  "special events",
+  "private parties",
+  "appointments",
   "pop-ups",
-  "corporate",
   "weddings",
+  "corporate",
+  "special events",
   "bachelorettes",
   "birthdays",
-  "girls' night",
-  "brand activations",
 ] as const;
 
 export const manifesto = {
@@ -51,8 +64,8 @@ export const ritual = [
   {
     n: "01",
     title: "Measure",
-    lede: "Pick your chain, we size it to you.",
-    body: "You choose from our 14K gold-filled and sterling silver chains. We wrap it, measure to the millimetre, and set the drape exactly how you like it — snug, or with a little movement.",
+    lede: "Pick your piece, we size it to you.",
+    body: "Bracelet, anklet, necklace or handchain — you choose the chain, in 14K gold-filled or sterling silver. We measure to the millimetre and set the drape exactly how you like it: snug, or with a little movement.",
     image: "/media/images/step-measure.webp",
     alt: "A jeweler measuring a fine gold chain around a customer's wrist",
   },
@@ -71,6 +84,41 @@ export const ritual = [
     body: "Swim in it, sleep in it, live in it. And if you ever need it off, one snip at the weld and we re-weld it for free, for life.",
     image: "/media/images/step-wear.webp",
     alt: "A woman admiring the new gold chain bracelet welded to her wrist",
+  },
+] as const;
+
+/**
+ * The four things hey babe actually makes, per the Instagram bio:
+ * Custom Bracelets + Anklets + Necklaces + Handchains.
+ */
+export const pieces = [
+  {
+    id: "bracelets",
+    name: "Bracelets",
+    body: "The one everybody starts with. Sized to your wrist and welded closed, so it is simply there from then on.",
+    image: "/media/images/hero-wrist.webp",
+    alt: "A fine gold chain bracelet on a wrist resting on blush silk",
+  },
+  {
+    id: "anklets",
+    name: "Anklets",
+    body: "All summer, every summer. Sits just right above the ankle bone and catches the light when you walk.",
+    image: "/media/images/anklet.webp",
+    alt: "A delicate gold chain anklet in golden hour light",
+  },
+  {
+    id: "necklaces",
+    name: "Necklaces",
+    body: "Sized to sit exactly where you want it. Wear one alone, or layer a gold and a silver together.",
+    image: "/media/images/necklace.webp",
+    alt: "A gold and silver layered permanent necklace on a display bust",
+  },
+  {
+    id: "handchains",
+    name: "Handchains",
+    body: "A bracelet and a ring, joined across the back of the hand. The piece people always ask about.",
+    image: "/media/images/handchain.webp",
+    alt: "A delicate gold handchain draped across the back of a hand",
   },
 ] as const;
 
@@ -146,6 +194,16 @@ export const chains = [
     image: "/media/images/chain-gold-herringbone.webp",
     alt: "A flat liquid-looking gold herringbone chain on peach silk",
   },
+  {
+    id: "vessel",
+    name: "Vessel",
+    metal: "14K Gold-Filled",
+    detail: "Handchain",
+    price: 110,
+    note: "Bracelet to ring, welded as one. Our signature piece.",
+    image: "/media/images/chain-handchain.webp",
+    alt: "A fine gold handchain arranged in a curve on blush silk",
+  },
 ] as const;
 
 // PLACEHOLDER — charm menu and add-on pricing.
@@ -172,41 +230,13 @@ export const charms = {
   detailAlt: "Macro view of a heart, star and pearl charm on a fine gold chain",
 };
 
-// PLACEHOLDER — event formats, minimums and guest counts.
+/**
+ * The five formats hey babe books, combining the Instagram bio
+ * (Private Parties • Appointments • Pop-Ups) with the business card
+ * (special events • pop-ups • corporate • weddings).
+ * Pricing is PLACEHOLDER.
+ */
 export const services = [
-  {
-    id: "weddings",
-    kicker: "Weddings",
-    title: "The getting-ready favour nobody throws away",
-    body: "We set up in the bridal suite while hair and makeup happen. Every bridesmaid leaves with a chain she is still wearing at your first anniversary. Bride's chain is always on us.",
-    bullets: ["Bridal suite or reception", "2–4 hours on site", "Bride's chain complimentary"],
-    from: 650,
-    image: "/media/images/wedding.webp",
-    video: "/media/video/wedding.mp4",
-    alt: "A bride and three bridesmaids showing matching gold chain bracelets",
-  },
-  {
-    id: "corporate",
-    kicker: "Corporate",
-    title: "A brand activation people actually queue for",
-    body: "Client appreciation, team offsites, store openings, conference booths. We bring the full blush setup, and your guests walk away wearing the memory of it.",
-    bullets: ["Branded signage available", "Fast-flow welding, 3–5 min per guest", "Invoiced, W-9 on file"],
-    from: 900,
-    image: "/media/images/corporate.webp",
-    video: "/media/video/corporate.mp4",
-    alt: "A permanent jewelry activation station inside a bright modern office",
-  },
-  {
-    id: "popups",
-    kicker: "Pop-Ups",
-    title: "Bring us into your shop for the weekend",
-    body: "Boutiques, salons, coffee shops, markets. We drive traffic, you keep the footfall. Revenue-share or flat fee, whichever suits you.",
-    bullets: ["Half or full day", "Rev-share or flat rate", "We promote to our list"],
-    from: 0,
-    image: "/media/images/popup.webp",
-    video: "/media/video/popup.mp4",
-    alt: "An elegant blush pop-up jewelry table with velvet trays of fine chains",
-  },
   {
     id: "private",
     kicker: "Private Parties",
@@ -214,19 +244,74 @@ export const services = [
     body: "Eight of you, a bottle of something cold, and a jeweler in the corner. Everyone leaves linked. It is the easiest party you will ever throw.",
     bullets: ["6 guest minimum", "Your place or ours", "Host chain complimentary at 10+"],
     from: 450,
+    wide: false,
     image: "/media/images/friends.webp",
     video: "/media/video/friends.mp4",
     alt: "Two friends laughing and showing matching gold permanent bracelets",
   },
+  {
+    id: "weddings",
+    kicker: "Weddings",
+    title: "The getting-ready favour nobody throws away",
+    body: "We set up in the bridal suite while hair and makeup happen. Every bridesmaid leaves with a chain she is still wearing at your first anniversary. Bride's chain is always on us.",
+    bullets: ["Bridal suite or reception", "2–4 hours on site", "Bride's chain complimentary"],
+    from: 650,
+    wide: false,
+    image: "/media/images/wedding.webp",
+    video: "/media/video/wedding.mp4",
+    alt: "A bride and three bridesmaids showing matching gold chain bracelets",
+  },
+  {
+    id: "popups",
+    kicker: "Pop-Ups",
+    title: "Bring us into your shop for the weekend",
+    body: "Boutiques, salons, coffee shops, markets and garden shops across all four states. We drive traffic, you keep the footfall. Revenue-share or flat fee, whichever suits you.",
+    bullets: ["Half or full day", "Rev-share or flat rate", "We promote to our list"],
+    from: 0,
+    wide: false,
+    image: "/media/images/popup.webp",
+    video: "/media/video/popup.mp4",
+    alt: "An elegant blush pop-up jewelry table with velvet trays of fine chains",
+  },
+  {
+    id: "corporate",
+    kicker: "Corporate & Special Events",
+    title: "An activation people actually queue for",
+    body: "Client appreciation, team offsites, store openings, conference booths. We bring the full blush setup, and your guests walk away wearing the memory of it.",
+    bullets: ["Branded signage available", "Fast-flow welding, 3–5 min per guest", "Invoiced, W-9 on file"],
+    from: 900,
+    wide: false,
+    image: "/media/images/corporate.webp",
+    video: "/media/video/corporate.mp4",
+    alt: "A permanent jewelry activation station inside a bright modern office",
+  },
+  {
+    id: "appointments",
+    kicker: "Appointments",
+    title: "Just you, whenever suits",
+    body: "Not every chain needs a party. Book a one-on-one and take your time over the metal, the length and the charms, with nobody waiting behind you.",
+    bullets: ["Solo or bring a friend", "About 30 minutes", "No event minimum"],
+    from: 0,
+    wide: true,
+    image: "/media/images/appointment.webp",
+    video: "",
+    alt: "A one-on-one permanent jewelry appointment at a small blush-draped table",
+  },
 ] as const;
 
-export const gallery = [
-  { src: "/media/images/anklet.webp", alt: "A delicate gold chain anklet in golden hour light", span: "tall" },
-  { src: "/media/images/packaging.webp", alt: "Blush jewelry packaging with a fine gold chain", span: "wide" },
-  { src: "/media/images/necklace.webp", alt: "A gold and silver layered permanent necklace on a display bust", span: "tall" },
-  { src: "/media/images/workspace.webp", alt: "A jeweler's flat lay with micro-welding pen, tweezers and chain spools", span: "wide" },
-  { src: "/media/images/mother-daughter.webp", alt: "A mother and daughter showing matching gold chain bracelets", span: "tall" },
-  { src: "/media/images/bridal-suite.webp", alt: "A bride having a gold chain welded on in a sunlit bridal suite", span: "wide" },
+/**
+ * Local gallery, used as the fallback when the Instagram feed has no access
+ * token configured. See src/lib/instagram.ts.
+ */
+export const galleryFallback = [
+  { src: "/media/images/handchain.webp", alt: "A delicate gold handchain draped across the back of a hand" },
+  { src: "/media/images/packaging.webp", alt: "Blush jewelry packaging with a fine gold chain" },
+  { src: "/media/images/popup-outdoor.webp", alt: "An outdoor permanent jewelry pop-up under a pergola in autumn light" },
+  { src: "/media/images/anklet.webp", alt: "A delicate gold chain anklet in golden hour light" },
+  { src: "/media/images/workspace.webp", alt: "A jeweler's flat lay with micro-welding pen, tweezers and chain spools" },
+  { src: "/media/images/mother-daughter.webp", alt: "A mother and daughter showing matching gold chain bracelets" },
+  { src: "/media/images/bridal-suite.webp", alt: "A bride having a gold chain welded on in a sunlit bridal suite" },
+  { src: "/media/images/necklace.webp", alt: "A gold and silver layered permanent necklace on a display bust" },
 ] as const;
 
 // PLACEHOLDER — written as representative reviews. Swap for real ones.
@@ -279,25 +364,30 @@ export const faqs = [
     a: "Plating is a microscopic layer that wears off. Gold-filled is a thick, bonded layer of solid 14K — legally it must be at least 5% gold by weight, roughly 100 times more than plating. It is why we will not sell plated.",
   },
   {
+    q: "What can you make?",
+    a: "Bracelets, anklets, necklaces and handchains, all custom sized and welded closed. Every one comes in 14K gold-filled or sterling silver, and you can add charms to any of them.",
+  },
+  {
     q: "How much does an event cost?",
-    a: "Private parties start around $450 and weddings around $650, which covers travel, setup and a set window of welding time. Guests pay for their own chains, or you can pre-buy a bar-tab style package. Tell us the headcount and we will send exact numbers.",
+    a: "Private parties start around $450 and weddings around $650, which covers travel, setup and a set window of welding time. Guests pay for their own chains, or you can pre-buy a bar-tab style package. Appointments have no minimum at all. Tell us the headcount and we will send exact numbers.",
   },
   {
     q: "How many guests can you get through?",
     a: "Roughly 12 to 15 guests an hour with one jeweler, faster with two. For anything over about 60 guests we bring a second station so nobody is standing around.",
   },
   {
-    q: "How far will you travel?",
-    a: `We cover ${site.serviceArea} with no travel fee, and we go further for weddings and corporate bookings — just ask and we will quote it.`,
+    q: "Where do you travel?",
+    a: `We work across all four of our home states — ${site.serviceArea} — and travel throughout New England and the New York metro for weddings, corporate bookings and pop-ups. Tell us where you are and we will quote it.`,
   },
-] as const;
+];
 
 export const eventTypes = [
+  "Private party",
+  "Appointment",
+  "Pop-up",
   "Wedding",
   "Bachelorette",
   "Birthday",
   "Corporate / brand event",
-  "Boutique pop-up",
-  "Private party",
   "Something else",
 ] as const;

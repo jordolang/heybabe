@@ -29,8 +29,15 @@ event formats and minimums, reviews, FAQs, contact details and the service
 area are all there. Change them there and the whole site updates — no
 component edits needed.
 
-Anything in that file marked `PLACEHOLDER` is realistic-but-invented content
-standing in until the real data arrives. Currently that means:
+Business facts are taken from hey babe's business card and Instagram profile
+[@xo.heybabe](https://instagram.com/xo.heybabe) and are accurate: the product
+line (bracelets, anklets, necklaces, handchains), the five bookable formats
+(private parties, appointments, pop-ups, weddings, corporate/special events),
+the materials (14K gold-filled and sterling silver), the four states served
+(CT, RI, MA, NY) and the contact details.
+
+Anything still marked `PLACEHOLDER` is realistic-but-invented content standing
+in until the real data arrives:
 
 | What | Where | Status |
 | --- | --- | --- |
@@ -38,11 +45,55 @@ standing in until the real data arrives. Currently that means:
 | Charm menu & prices | `charms` | Placeholder |
 | Event minimums | `services[].from` | Placeholder |
 | Reviews | `testimonials` | Placeholder — written as representative |
-| Service area | `site.serviceArea` | Placeholder — set to the real region |
 | Domain | `site.url` | Placeholder — set before launch (drives SEO + sitemap) |
 
-Contact details (`xo.heybabe@gmail.com`, `@xo.heybabe`) are taken from the
-business card and are real.
+---
+
+## Brand assets
+
+`public/brand/` holds hey babe's real logo, lifted from the Instagram profile
+image:
+
+- **`wordmark.png`** — the "hey babe" script and its rule, as a transparent
+  alpha mask. `src/components/Wordmark.tsx` applies it as a CSS mask over
+  `currentColor`, so one asset renders white over the hero footage, ink on the
+  cream page and shell in the dark footer. Size it with a height utility
+  (`h-[48px]`); the width follows from the aspect ratio.
+- **`logo-badge.png`** — the full circular badge, used for the favicon
+  (`src/app/icon.png`) and the social card.
+
+If a higher-resolution original of the logo turns up, replace these two files
+and nothing else needs to change.
+
+---
+
+## Instagram feed
+
+The gallery section pulls hey babe's latest posts.
+
+**Instagram cannot be scraped.** An unauthenticated request to the profile is
+redirected to a login wall, the private web endpoints answer `401
+require_login`, and scraping would breach Instagram's terms in any case. So the
+feed uses the official Instagram Graph API, which needs a long-lived access
+token for the account:
+
+```
+INSTAGRAM_ACCESS_TOKEN=IGQ...          # long-lived token for @xo.heybabe
+INSTAGRAM_API_VERSION=v21.0            # optional, defaults to v21.0
+```
+
+To get the token: at [developers.facebook.com](https://developers.facebook.com)
+create an app, add the **Instagram** product, connect the @xo.heybabe
+professional account, then generate and exchange a user token for a long-lived
+one. Long-lived tokens last 60 days and should be refreshed before they expire.
+
+The feed is re-fetched hourly (`revalidate: 3600`), so new posts appear on the
+site by themselves without a redeploy.
+
+**Without a token** — or if the call fails or the token has expired — the
+section falls back to the curated local gallery in `galleryFallback`, so it
+always renders something rather than collapsing to an empty grid. Nothing
+breaks; the feed simply stops being live.
 
 ---
 
@@ -100,6 +151,8 @@ RESEND_API_KEY=re_xxxxxxxx
 BOOKING_FROM=bookings@yourdomain.com   # must be a verified sender
 BOOKING_TO=xo.heybabe@gmail.com        # optional, defaults to site.email
 ```
+
+(See also `INSTAGRAM_ACCESS_TOKEN` under **Instagram feed** above.)
 
 **Until those are set the form does not pretend to have sent anything** — it
 responds `delivered: false` and the UI hands the visitor a pre-filled email

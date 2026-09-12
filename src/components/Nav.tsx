@@ -63,7 +63,7 @@ export default function Nav() {
               open ? "text-white" : solid ? "text-ink" : "text-white",
             )}
           >
-            <Wordmark className="text-[1.75rem] sm:text-[2rem]" underline={false} />
+            <Wordmark className="h-[42px] sm:h-[48px]" />
           </Link>
 
           <nav className="hidden items-center gap-9 lg:flex" aria-label="Primary">

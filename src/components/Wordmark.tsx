@@ -3,40 +3,49 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+/** Aspect of the trimmed artwork in public/brand/wordmark.png. */
+const RATIO = 996 / 632;
+
 /**
- * The "hey babe" wordmark: handwritten script over a single drawn rule,
- * rebuilt from the brand card. The rule draws itself on first paint.
+ * hey babe's actual wordmark, lifted from the brand logo rather than
+ * approximated with a script webfont.
+ *
+ * It is applied as a CSS mask over `currentColor`, so one asset renders white
+ * over the hero footage, ink on the cream page and shell on the dark footer,
+ * inheriting colour from whatever it sits inside.
+ *
+ * Size it with a height utility (`h-[50px]`) and the width follows from the
+ * aspect ratio. The mark is a fairly square block — the script carries tall
+ * ascenders and a descender loop — so sizing by width gets tall fast.
  */
 export default function Wordmark({
   className,
   animate = false,
-  underline = true,
 }: {
   className?: string;
   animate?: boolean;
-  underline?: boolean;
 }) {
   return (
-    <span className={cn("inline-flex flex-col items-center leading-none", className)}>
-      <span className="font-script block pb-[0.06em]">hey babe</span>
-      {underline && (
-        <svg
-          viewBox="0 0 320 10"
-          className="-mt-[0.06em] block w-full overflow-visible"
-          fill="none"
-          aria-hidden
-        >
-          <motion.path
-            d="M3 6.2C58 3.4 128 2.2 196 2.6C246 2.9 286 3.8 317 5.1"
-            stroke="currentColor"
-            strokeWidth={4.5}
-            strokeLinecap="round"
-            initial={animate ? { pathLength: 0 } : false}
-            animate={animate ? { pathLength: 1 } : undefined}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-          />
-        </svg>
-      )}
-    </span>
+    <motion.span
+      role="img"
+      aria-label="hey babe"
+      className={cn("block shrink-0", className)}
+      style={{
+        aspectRatio: String(RATIO),
+        backgroundColor: "currentColor",
+        WebkitMaskImage: "url(/brand/wordmark.png)",
+        maskImage: "url(/brand/wordmark.png)",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+      }}
+      // Wipes left-to-right, the way the mark would be written by hand.
+      initial={animate ? { clipPath: "inset(0 100% 0 0)" } : false}
+      animate={animate ? { clipPath: "inset(0 0% 0 0)" } : undefined}
+      transition={{ duration: 1.25, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+    />
   );
 }

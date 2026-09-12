@@ -32,21 +32,31 @@ export default function Services() {
 
         <div className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2">
           {services.map((service, i) => (
-            <Reveal key={service.id} delay={(i % 2) * 0.1}>
+            <Reveal
+              key={service.id}
+              delay={(i % 2) * 0.1}
+              // Appointments is a different shape of offering — not an event —
+              // so it takes the full row rather than sitting in the pair grid.
+              className={service.wide ? "md:col-span-2" : undefined}
+            >
               <article
                 onMouseEnter={() => setHovered(service.id)}
                 onMouseLeave={() => setHovered(null)}
                 className="group"
               >
-                <div className="relative aspect-16/10 overflow-hidden rounded-[2px] bg-blush-tint">
+                <div
+                  className={`relative overflow-hidden rounded-[2px] bg-blush-tint ${
+                    service.wide ? "aspect-2/1" : "aspect-16/10"
+                  }`}
+                >
                   <Image
                     src={service.image}
                     alt={service.alt}
                     fill
-                    sizes="(min-width: 768px) 46vw, 92vw"
+                    sizes={service.wide ? "92vw" : "(min-width: 768px) 46vw, 92vw"}
                     className="object-cover transition-transform duration-[1200ms] ease-[var(--ease-babe)] group-hover:scale-[1.04]"
                   />
-                  {!isTouch && hovered === service.id && (
+                  {!isTouch && service.video && hovered === service.id && (
                     <div className="absolute inset-0 animate-[fade_0.6s_ease] [animation-fill-mode:both]">
                       <VideoLoop
                         src={service.video}

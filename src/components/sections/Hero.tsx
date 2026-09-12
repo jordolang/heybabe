@@ -36,7 +36,10 @@ function Overlay() {
         transition={{ delay: 1.95, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
         className="mt-5"
       >
-        <Wordmark animate className="t-hero drop-shadow-[0_2px_28px_rgba(58,45,41,0.35)]" />
+        <Wordmark
+          animate
+          className="mx-auto h-[clamp(104px,17vw,208px)] drop-shadow-[0_2px_28px_rgba(58,45,41,0.35)]"
+        />
       </motion.div>
 
       <motion.h1

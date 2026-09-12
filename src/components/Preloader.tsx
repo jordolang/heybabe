@@ -48,7 +48,7 @@ export default function Preloader() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-center text-white"
           >
-            <Wordmark animate className="text-[clamp(3rem,11vw,7rem)]" />
+            <Wordmark animate className="mx-auto h-[clamp(92px,15vw,160px)]" />
             <motion.p
               className="eyebrow mt-6 !text-white/75"
               initial={{ opacity: 0 }}

@@ -4,7 +4,7 @@ import Wordmark from "@/components/Wordmark";
 export default function NotFound() {
   return (
     <div className="bg-babe grain flex min-h-screen flex-col items-center justify-center px-6 text-center text-white">
-      <Wordmark className="text-[clamp(2.6rem,9vw,5rem)]" />
+      <Wordmark className="mx-auto h-[clamp(80px,13vw,140px)]" />
       <p className="font-display mt-10 text-[clamp(1.6rem,4vw,2.6rem)]">
         This one came unclasped.
       </p>

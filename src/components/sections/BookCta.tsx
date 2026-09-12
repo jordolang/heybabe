@@ -57,7 +57,7 @@ export default function BookCta() {
           </Reveal>
 
           <Reveal delay={0.2}>
-            <Wordmark className="mt-16 self-start text-[2.4rem] opacity-70" />
+            <Wordmark className="mt-16 h-[62px] opacity-75" />
           </Reveal>
         </div>
       </div>

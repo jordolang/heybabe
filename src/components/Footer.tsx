@@ -10,10 +10,13 @@ export default function Footer() {
       <div className="mx-auto max-w-[1500px] px-5 py-20 sm:px-8">
         <div className="grid gap-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Wordmark className="text-[2.6rem]" />
-            <p className="mt-7 max-w-[34ch] leading-relaxed text-shell/60">
-              {site.tagline}. {site.blurb}. Serving {site.serviceArea} and
-              travelling for the big ones.
+            <Wordmark className="h-[64px]" />
+            <p className="mt-7 max-w-[36ch] leading-relaxed text-shell/60">
+              {site.tagline}. Custom bracelets, anklets, necklaces and
+              handchains in 14K gold-filled and sterling silver.
+            </p>
+            <p className="mt-5 text-[0.78rem] tracking-[0.22em] text-shell/45 uppercase">
+              {site.statesShort.join(" · ")}
             </p>
           </div>
 
@@ -70,7 +73,7 @@ export default function Footer() {
           <p>
             &copy; {year} {site.name}. All rights reserved.
           </p>
-          <p>14K gold-filled &amp; sterling silver. Never plated.</p>
+          <p>{site.collective} &middot; Never plated.</p>
         </div>
       </div>
     </footer>

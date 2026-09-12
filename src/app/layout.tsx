@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Jost, Kaushan_Script } from "next/font/google";
+import { Cormorant_Garamond, Jost, Sacramento } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -20,17 +20,17 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const kaushan = Kaushan_Script({
+const sacramento = Sacramento({
   subsets: ["latin"],
   weight: "400",
-  variable: "--font-kaushan",
+  variable: "--font-script-family",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — ${site.tagline}`,
+    default: `${site.name} | ${site.collective} — ${site.tagline}`,
     template: `%s — ${site.name}`,
   },
   description: site.description,
@@ -38,25 +38,31 @@ export const metadata: Metadata = {
     "permanent jewelry",
     "welded bracelets",
     "permanent bracelet",
+    "permanent anklet",
+    "permanent necklace",
+    "handchain",
     "14k gold filled",
     "sterling silver",
     "wedding favors",
     "bachelorette party",
     "corporate event jewelry",
     "pop-up jewelry",
-    site.serviceArea,
+    // The four states served, plus their metros — this is how people search.
+    ...site.states.map((state) => `permanent jewelry ${state}`),
+    "permanent jewelry near me",
   ],
   openGraph: {
     type: "website",
     url: site.url,
-    title: `${site.name} — ${site.tagline}`,
+    title: `${site.name} | ${site.collective} — ${site.tagline}`,
     description: site.description,
     siteName: site.name,
+    locale: "en_US",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: site.name }],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — ${site.tagline}`,
+    title: `${site.name} | ${site.collective} — ${site.tagline}`,
     description: site.description,
   },
   alternates: { canonical: "/" },
@@ -72,19 +78,46 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "JewelryStore",
   name: site.name,
+  alternateName: site.collective,
   description: site.description,
   url: site.url,
   email: site.email,
-  areaServed: site.serviceArea,
+  logo: `${site.url}/brand/logo-badge.png`,
+  image: `${site.url}/opengraph-image`,
+  // Serves four states rather than a single storefront location.
+  areaServed: site.states.map((state) => ({
+    "@type": "State",
+    name: state,
+  })),
   sameAs: [site.instagramUrl],
   priceRange: "$$",
-  makesOffer: {
-    "@type": "Offer",
-    itemOffered: {
-      "@type": "Service",
-      name: "Permanent jewelry welding for events",
-      serviceType: "Permanent jewelry",
+  makesOffer: [
+    {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: "Permanent jewelry for private parties, pop-ups and events",
+        serviceType: "Permanent jewelry",
+      },
     },
+    {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: "Permanent jewelry appointments",
+        serviceType: "Permanent jewelry",
+      },
+    },
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Custom permanent jewelry",
+    itemListElement: ["Bracelets", "Anklets", "Necklaces", "Handchains"].map(
+      (name) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Product", name, material: "14K gold-filled, sterling silver" },
+      }),
+    ),
   },
 };
 
@@ -94,7 +127,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jost.variable} ${cormorant.variable} ${kaushan.variable}`}
+      className={`${jost.variable} ${cormorant.variable} ${sacramento.variable}`}
     >
       <body>
         <a
