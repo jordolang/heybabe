@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   hey babe — design tokens
+   Motif: sunlit blush → peach gradient, warm ivory paper, soft gold.
+   Drawn from the brand card: handwritten script wordmark, geometric
+   sans body, rose-to-apricot wash.
+------------------------------------------------------------------- */
+@theme {
+  --color-shell: #fdf8f5;
+  --color-shell-deep: #f7ece6;
+  --color-blush: #f3c9c1;
+  --color-blush-soft: #fae3dd;
+  --color-blush-tint: #fdf1ed;
+  --color-peach: #f8d9bf;
+  --color-apricot: #f2bda0;
+  --color-rose: #dfa197;
+  --color-mauve: #c08a80;
+  --color-ink: #3a2d29;
+  --color-ink-soft: #6b5750;
+  --color-ink-faint: #9a847c;
+  --color-gold: #c2a06b;
+  --color-gold-light: #e0c79b;
+
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-script: var(--font-script-family), cursive;
+
+  --ease-babe: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root {
+  --gradient-babe: linear-gradient(
+    118deg,
+    #f6ccc4 0%,
+    #f5cdc0 22%,
+    #f7d6c3 48%,
+    #f9dfc6 72%,
+    #fae7d2 100%
+  );
+  --gradient-babe-soft: linear-gradient(
+    118deg,
+    #fae4de 0%,
+    #fbe8dd 45%,
+    #fdf1e4 100%
+  );
+  /* Text-safe version of the brand wash: same hue family, taken down far
+     enough to clear contrast against the cream page background. */
+  --gradient-babe-text: linear-gradient(
+    112deg,
+    #c0776a 0%,
+    #b57470 48%,
+    #a87a62 100%
+  );
+  --shadow-lift: 0 1px 2px rgba(58, 45, 41, 0.04),
+    0 12px 32px -12px rgba(58, 45, 41, 0.12);
+  --shadow-float: 0 2px 4px rgba(58, 45, 41, 0.04),
+    0 28px 60px -24px rgba(58, 45, 41, 0.22);
+  --nav-h: 76px;
+  color-scheme: light;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  /* Lenis drives scrolling; native smooth would fight it. */
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: var(--color-shell);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-blush);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-mauve);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------- type -------------------------- */
+.font-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+}
+.font-display {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  line-height: 1.02;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--color-ink-faint);
+}
+
+/* Fluid display scale */
+.t-hero {
+  font-size: clamp(3.25rem, 11vw, 10.5rem);
+}
+.t-section {
+  font-size: clamp(2.25rem, 6vw, 5.25rem);
+}
+.t-sub {
+  font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+}
+
+/* ---------------------------------- surfaces ---------------------- */
+.bg-babe {
+  background-image: var(--gradient-babe);
+}
+.bg-babe-soft {
+  background-image: var(--gradient-babe-soft);
+}
+
+.text-babe {
+  background-image: var(--gradient-babe-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fine paper grain — keeps large flat gradients from banding. */
+.text-babe-light {
+  background-image: var(--gradient-babe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hairline {
+  border-color: color-mix(in srgb, var(--color-ink) 10%, transparent);
+}
+
+/* ---------------------------------- motion ------------------------ */
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.animate-marquee {
+  animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.animate-float {
+  animation: float-soft 7s var(--ease-soft) infinite;
+}
+
+@keyframes draw-underline {
+  from {
+    stroke-dashoffset: 320;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------------------------------- a11y -------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .animate-marquee {
+    animation: none !important;
+  }
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Hide scrollbar on horizontal rails without losing scrollability */
+.no-bar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-bar::-webkit-scrollbar {
+  display: none;
+}
