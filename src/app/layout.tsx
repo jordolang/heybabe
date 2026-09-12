@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost, Sacramento } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
+import { siteUrl } from "@/lib/site-url";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollProgress from "@/components/ScrollProgress";
 import Nav from "@/components/Nav";
@@ -28,7 +29,7 @@ const sacramento = Sacramento({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(siteUrl()),
   title: {
     default: `${site.name} | ${site.collective} — ${site.tagline}`,
     template: `%s — ${site.name}`,
@@ -53,7 +54,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    url: site.url,
+    url: siteUrl(),
     title: `${site.name} | ${site.collective} — ${site.tagline}`,
     description: site.description,
     siteName: site.name,
@@ -74,16 +75,16 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-const jsonLd = {
+const jsonLd = (origin: string) => ({
   "@context": "https://schema.org",
   "@type": "JewelryStore",
   name: site.name,
   alternateName: site.collective,
   description: site.description,
-  url: site.url,
+  url: origin,
   email: site.email,
-  logo: `${site.url}/brand/logo-badge.png`,
-  image: `${site.url}/opengraph-image`,
+  logo: `${origin}/brand/logo-badge.png`,
+  image: `${origin}/opengraph-image`,
   // Serves four states rather than a single storefront location.
   areaServed: site.states.map((state) => ({
     "@type": "State",
@@ -119,7 +120,7 @@ const jsonLd = {
       }),
     ),
   },
-};
+});
 
 export default function RootLayout({
   children,
@@ -138,7 +139,7 @@ export default function RootLayout({
         </a>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(siteUrl())) }}
         />
         <SmoothScroll />
         <ScrollProgress />

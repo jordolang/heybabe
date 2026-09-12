@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/data/site";
+import { siteUrl } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const origin = siteUrl();
   return [
-    { url: site.url, lastModified: now, changeFrequency: "monthly", priority: 1 },
-    { url: `${site.url}/book`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: origin, lastModified: now, changeFrequency: "monthly", priority: 1 },
+    { url: `${origin}/book`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
   ];
 }
