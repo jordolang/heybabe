@@ -2,20 +2,28 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav, site } from "@/data/site";
 import Wordmark from "./Wordmark";
 import { cn } from "@/lib/utils";
 
 export default function Nav() {
-  const [solid, setSolid] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
+  const pathname = usePathname();
+
+  // Only the homepage puts a full-bleed video behind the bar. Everywhere else
+  // the page is cream from the first pixel, so the light treatment would be
+  // invisible — those pages start solid.
+  const overHero = pathname === "/";
+  const solid = !overHero || scrolled;
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
-    setSolid(y > 40);
+    setScrolled(y > 40);
     // Hide on the way down, reveal the moment they scroll back up.
     setHidden(y > prev && y > 320 && !open);
   });
