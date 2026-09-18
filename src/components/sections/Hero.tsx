@@ -1,20 +1,93 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useTransform, type MotionValue } from "framer-motion";
 import Link from "next/link";
-import ScrollVideo from "@/components/ScrollVideo";
+import ScrollVideo, { useScrub } from "@/components/ScrollVideo";
 import Wordmark from "@/components/Wordmark";
-import { site } from "@/data/site";
+import { ritual, site } from "@/data/site";
 import { useReducedMotion } from "@/lib/hooks";
+import { clamp } from "@/lib/utils";
 
-function Overlay() {
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/** Clamped 0…1 ramp across a slice of the track. */
+const ramp = (v: number, from: number, to: number) =>
+  clamp((v - from) / (to - from));
+
+/** 0 → 1 → 0 across a slice, ramping over `fade` at each end. */
+const trapezoid = (v: number, start: number, end: number, fade: number) =>
+  Math.min(ramp(v, start, start + fade), 1 - ramp(v, end - fade, end));
+
+/**
+ * Every scroll-driven value below goes through a transform *function* rather
+ * than an input/output range. Framer Motion hands simple two-keyframe
+ * scroll-linked opacity ranges to a native ScrollTimeline animation, which it
+ * then plays back over the wrong range — the inline style reads correctly while
+ * the composited opacity does something else entirely, which is what left the
+ * hero type sitting at full strength no matter how far you scrolled. A function
+ * has no keyframes to lift, so it stays on the main-thread path and is correct.
+ */
+
+/**
+ * Where each beat owns the frame, in track progress (0…1). They are butted end
+ * to end so one line is always either arriving or leaving — there is no stretch
+ * of the hero where scrolling moves the footage but nothing else.
+ */
+const BEATS = [
+  { start: 0.2, end: 0.47 },
+  { start: 0.47, end: 0.73 },
+  { start: 0.73, end: 0.99 },
+] as const;
+
+/** A ritual step, faded through the frame across its slice of the scroll. */
+function Beat({
+  progress,
+  index,
+}: {
+  progress: MotionValue<number>;
+  index: number;
+}) {
+  const { start, end } = BEATS[index];
+  const step = ritual[index];
+  const fade = (end - start) * 0.28;
+
+  const opacity = useTransform(progress, (v) => trapezoid(v, start, end, fade));
+  const y = useTransform(progress, (v) => 56 - 112 * ramp(v, start, end));
+  const filter = useTransform(
+    progress,
+    (v) => `blur(${(10 * (1 - trapezoid(v, start, end, fade))).toFixed(2)}px)`,
+  );
+
+  return (
+    <motion.div
+      style={{ opacity, y, filter }}
+      className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6 text-center text-white"
+    >
+      {/* The footage runs bright under the type here, so both lines carry a
+          soft shadow rather than relying on the scrim alone. */}
+      <p className="eyebrow !text-white/85 drop-shadow-[0_1px_10px_rgba(58,45,41,0.55)]">
+        {step.n} &nbsp;&mdash;&nbsp; {step.title}
+      </p>
+      <p className="font-display mx-auto mt-6 max-w-[18ch] text-[clamp(1.9rem,5vw,3.6rem)] leading-[1.15] text-white drop-shadow-[0_2px_20px_rgba(58,45,41,0.45)]">
+        {step.lede}
+      </p>
+    </motion.div>
+  );
+}
+
+/** The title card: name, promise, CTAs. Owns the top fifth of the track. */
+function TitleCard({ progress }: { progress: MotionValue<number> }) {
   const reduced = useReducedMotion();
-  const { scrollY } = useScroll();
-  // Lift and dissolve the type over roughly the first screen of scroll so the
-  // footage is left to speak for itself.
-  const y = useTransform(scrollY, [0, 700], [0, -110]);
-  const opacity = useTransform(scrollY, [0, 430], [1, 0]);
-  const style = reduced ? undefined : { y, opacity };
+  // Lift and dissolve the type quickly — the visitor should see the frame
+  // answer their very first flick of the wheel, not half a screen later.
+  const y = useTransform(progress, (v) => -140 * ramp(v, 0, 0.24));
+  const opacity = useTransform(progress, (v) => 1 - ramp(v, 0, 0.14));
+  // Once the card has dissolved its buttons must stop swallowing clicks, or
+  // they sit invisibly over the beats for the rest of the hero.
+  const pointerEvents = useTransform(progress, (v) =>
+    v > 0.12 ? "none" : "auto",
+  );
+  const style = reduced ? undefined : { y, opacity, pointerEvents };
 
   return (
     <motion.div
@@ -24,7 +97,7 @@ function Overlay() {
       <motion.p
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.85, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ delay: 0.85, duration: 0.8, ease: EASE }}
         className="eyebrow !text-white/80"
       >
         {site.blurb}
@@ -33,7 +106,7 @@ function Overlay() {
       <motion.div
         initial={{ opacity: 0, y: 26 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.95, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ delay: 0.95, duration: 1, ease: EASE }}
         className="mt-5"
       >
         <Wordmark
@@ -45,7 +118,7 @@ function Overlay() {
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.25, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ delay: 1.15, duration: 0.9, ease: EASE }}
         className="font-display mt-7 max-w-[16ch] text-[clamp(1.4rem,3.4vw,2.6rem)] text-white/95"
       >
         Jewelry with no clasp, because some things aren&rsquo;t meant to come off.
@@ -54,7 +127,7 @@ function Overlay() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.45, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ delay: 1.3, duration: 0.8, ease: EASE }}
         className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
       >
         <Link
@@ -74,26 +147,61 @@ function Overlay() {
           How it works
         </a>
       </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.8, duration: 1 }}
-        className="absolute bottom-9 left-1/2 -translate-x-1/2 text-center"
-      >
-        <span className="eyebrow !text-[0.6rem] !text-white/70">Scroll</span>
-        <span
-          aria-hidden
-          className="mx-auto mt-3 block h-10 w-px overflow-hidden bg-white/25"
-        >
-          <motion.span
-            className="block h-full w-full bg-white"
-            animate={reduced ? undefined : { y: ["-100%", "100%"] }}
-            transition={{ duration: 1.9, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </span>
-      </motion.div>
     </motion.div>
+  );
+}
+
+/**
+ * Bottom rail: the "Scroll" cue hands over to a filling progress bar the moment
+ * the visitor moves, so the hero always shows how much of itself is left.
+ */
+function Rail({ progress }: { progress: MotionValue<number> }) {
+  const reduced = useReducedMotion();
+  const cueOpacity = useTransform(progress, (v) => 1 - ramp(v, 0, 0.05));
+  const barOpacity = useTransform(progress, (v) => trapezoid(v, 0.01, 1, 0.06));
+
+  if (reduced) return null;
+
+  return (
+    <div className="pointer-events-none absolute bottom-8 left-1/2 z-20 w-[min(240px,56vw)] -translate-x-1/2 text-center">
+      <motion.span
+        style={{ opacity: cueOpacity }}
+        className="eyebrow block !text-[0.6rem] !text-white/70"
+      >
+        Scroll
+      </motion.span>
+      <motion.span
+        aria-hidden
+        style={{ opacity: barOpacity }}
+        className="mt-3 block h-px w-full bg-white/25"
+      >
+        <motion.span
+          className="block h-full w-full origin-left bg-white"
+          style={{ scaleX: progress }}
+        />
+      </motion.span>
+    </div>
+  );
+}
+
+function Overlay() {
+  const reduced = useReducedMotion();
+  const { progress } = useScrub();
+
+  return (
+    <>
+      <TitleCard progress={progress} />
+      {/* The beats are a scroll-only device; with reduced motion they would all
+          land stacked on top of each other, so the title card stands alone. */}
+      {!reduced && (
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-10">
+          {BEATS.map((_, i) => (
+            <Beat key={i} progress={progress} index={i} />
+          ))}
+        </div>
+      )}
+      <Rail progress={progress} />
+    </>
   );
 }
 
@@ -104,7 +212,8 @@ export default function Hero() {
         src="/media/video/hero.scrub.mp4"
         srcMobile="/media/video/hero-vertical.scrub.mp4"
         poster="/media/video/hero-poster.webp"
-        length={2.8}
+        length={2.2}
+        lengthMobile={1.9}
         scrim={0.3}
       >
         <Overlay />
